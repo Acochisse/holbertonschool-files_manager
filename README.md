@@ -18,3 +18,4 @@ This is a project to learn how to use the files manager API, using redis
 
 ## Author
 * **Blake Stewart** - [Github](https://github.com/Acochisse)
+* **Ashton Stewart** - [Github](ashtonjamess@live.com)
