@@ -6,51 +6,38 @@
 // an asynchronous function get that takes a string key as argument and returns the Redis value stored for this key
 // an asynchronous function set that takes a string key, a value and a duration in second as arguments to store it in Redis (with an expiration set by the duration argument)
 // an asynchronous function del that takes a string key as argument and remove the value in Redis for this key
-
-
-
 const redis = require('redis');
-const client = redis.createClient();
-
-client.on('error', function (err) {
-    console.log('Error ' + err);
-});
+const { promisify } = require('util');
 
 class RedisClient {
-    constructor() {
-        this.client = redis.createClient();
+  constructor() {
+    this.client = redis.createClient();
+    this.client.on('error', (err) => {
+      console.log(err);
+      });
     }
 
-    isAlive() {
-        return this.client.connected;
-    }
+  isAlive() {
+    return this.client.connected;
+  }
 
-    async get(key) {
-        return new Promise((resolve, reject) => {
-            this.client.get(key, (err, value) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(value);
-                }
-            });
-        });
-    }
+  async get(key) {
+    const getPromise = promisify(this.client.get).bind(this.client);
+    return getPromise(key);
+  }
 
-    async set(key, value, duration) {
-        return new Promise((resolve, reject) => {
-            this.client.set(key, value);
-            this.client.expire(key, duration);
-            resolve();
-        });
-    }
+  async set(key, value, duration) {
+    const setPromise = promisify(this.client.set).bind(this.client);
+    return setPromise(key, value, 'EX', duration);
+  }
+    
+  
 
-    async del(key) {
-        return new Promise((resolve, reject) => {
-            this.client.del(key);
-            resolve();
-        });
-    }
+  async del(key) {
+      const delPromise = promisify(this.client.del).bind(this.client);
+      return delPromise(key);
+  }
 }
 
-module.exports = new RedisClient();
+const redisClient = new RedisClient();
+module.exports = redisClient;
