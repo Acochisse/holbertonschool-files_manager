@@ -19,27 +19,13 @@ class DbClient {
   }
 
   async nbUsers() {
-    try {
-      const db = this.client.db(database);
-      const users = db.collection('users');
-      const countPromise = promisify(users.countDocuments).bind(users);
-      return countPromise();
-    }
-    catch (err) {
-      console.log(err);
-    }
+    const usercount = await this.db.collection('users').countDocuments({});
+    return usercount;
   }
 
   async nbFiles() {
-    try {
-      const db = this.client.db(database);
-      const files = db.collection('files');
-      const countPromise = promisify(files.countDocuments).bind(files);
-      return countPromise();
-    }
-    catch (err) {
-      console.log(err);
-    }
+    const filecount = await this.db.collection('files').countDocuments({});
+    return filecount;
   }
 }
 
