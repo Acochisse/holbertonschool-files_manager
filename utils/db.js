@@ -20,15 +20,15 @@ class DbClient {
     return this.client.isConnected();
   }
 
-  async nbUSers() {
+  async nbUsers() {
     this.client.use(DB_DATABASE);
-    const UserPromise = promisify(this.client.users.find()).bond(this.client);
+    const UserPromise = promisify(this.client.users.find()).bind(this.client);
     return UserPromise();
   }
 
   async nbFiles() {
     this.client.use(DB_DATABASE);
-    const FilePromise = promisify(this.client.files.find()).bond(this.client);
+    const FilePromise = promisify(this.client.files.find()).bind(this.client);
     return FilePromise();
   }
 }
