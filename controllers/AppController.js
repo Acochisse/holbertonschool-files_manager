@@ -4,19 +4,19 @@ const express = require('express');
 const app = require('../server')
 
 const getStatus = (res) => {
-  JSON.stringify({
+  const data = JSON.stringify({
   'redis': redisClient.isAlive(),
   'db': dbClient.isAlive(),
 })
-res.status(200).send(data);
+return data;
 }
 
 const getStats = (res) => {
-  JSON.stringify({
+  const data = JSON.stringify({
   'users': dbClient.nbUsers(),
   'files': dbClient.nbFiles(),
 })
-res.status(200).send(data);
+return data;
 }
 
 module.exports = getStatus, getStats

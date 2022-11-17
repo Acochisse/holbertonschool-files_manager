@@ -6,11 +6,11 @@ const {getStats, getStatus} = require('../controllers/AppController')
 
 module.exports = (app) => {
 app.get('/status', (req, res) => {
-  getStatus(res);
+  res.status(200).send(getStatus(res));
 })
 
 app.get('/stats', (req, res) => {
-  getStats(res);
+  res.status(200).send(getStats(res));
 })
 }
 
