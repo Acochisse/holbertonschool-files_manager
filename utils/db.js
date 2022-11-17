@@ -3,7 +3,7 @@ const mongodb = require('mongodb');
 const { MongoClient } = require('mongodb');
 
 const host = process.env.DB_HOST || 'localhost';
-const port = process.env.DB_PORT || 27017 ;;
+const port = process.env.DB_PORT || 27017 ;
 const database =  process.env.DATABASE || "file_manager";
 const url = `mongodb://${host}:${port}`;
 
@@ -11,9 +11,9 @@ class DbClient {
   constructor() {
     MongoClient.connect(url, { useUnifiedTopology: true}, (err, client) => {
       if (client) {
-        this.db = client.db(database)
-        this.users = client.database.collection('users')
-        this.files = client.database.collection('files')
+        this.db = client.db(database);
+        this.users = client.database.collection('users');
+        this.files = client.database.collection('files');
       }
       if (err) {
         console.log(err);
@@ -25,9 +25,9 @@ class DbClient {
 
   isAlive() {
     if (!this.db){
-      return (!!this.db)
+      return !!this.db;
     }
-    return(!!this.db)
+    return !!this.db;
   }
 
   async nbUsers() {
