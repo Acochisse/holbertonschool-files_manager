@@ -8,4 +8,4 @@ router.get('/status', AppController.status);
 router.get('/stats', AppController.stats);
 
 
-module.exports = Router;
+module.exports = router;
