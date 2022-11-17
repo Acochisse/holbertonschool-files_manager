@@ -24,9 +24,6 @@ class DbClient {
 
 
   isAlive() {
-    if (!this.db){
-      return !!this.db;
-    }
     return !!this.db;
   }
 
