@@ -1,14 +1,21 @@
-const app = require('../server.js');
-const routePath = require('.routes/index.js');
-const redisClient = require('./utils/redis');
-const mongoClient = require('./utils/db');
+import redisClient from "../utils/redis";
+import dbClient from "../utils/db";
 
-app.get('/status', (req, res) => { {
-    res.status(200).send(JSON.stringify({ "redis": redisClient.isAlive(), "db": mongoClient.isAlive() }));
+class AppController {
+  static getStatus(response) {
+    const data = {
+      redis: redisClient.isAlive(),
+      db: dbClient.isAlive(),
+    }
+    return response.status(200).json(data);
   }
-});
 
-app.get('/stats', (req, res) => {
-  res.status(200).send(JSON.stringify({ "users": db.dbClient.nbUsers(), "files": db.dbClient.nbFiles() }));
-});
-
+  static async getStats(response) {
+    const stats = {
+      users: await dbClient.nbUsers(),
+      files: await dbClient.nbFiles(),
+    };
+    return response.status(200).json(stats);
+}
+  }
+module.exports = AppController;
