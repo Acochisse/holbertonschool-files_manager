@@ -21,14 +21,18 @@ class DbClient {
   async nbUsers() {
     const db = this.client.db(database);
     const users = db.collection('users');
-    const countPromise = promisify(users.countDocuments).bind(users);
+    const countPromise = promisify(users.countDocuments).bind(users).catch((err) => {
+      console.log(err);
+    });;
     return countPromise();
   }
 
   async nbFiles() {
     const db = this.client.db(database);
     const files = db.collection('files');
-    const countPromise = promisify(files.countDocuments).bind(files);
+    const countPromise = promisify(files.countDocuments).bind(files).catch((err) => {
+      console.log(err);
+    });;
     return countPromise();
   }
 }
