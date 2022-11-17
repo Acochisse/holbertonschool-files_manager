@@ -3,7 +3,7 @@ import dbClient from "../utils/db";
 const express = require('express');
 const app = require('../server')
 
-const getStatus = (res) => {
+const getStatus = () => {
   const data = JSON.stringify({
   'redis': redisClient.isAlive(),
   'db': dbClient.isAlive(),
@@ -11,7 +11,7 @@ const getStatus = (res) => {
 return data;
 }
 
-const getStats = (res) => {
+const getStats = () => {
   const data = JSON.stringify({
   'users': dbClient.nbUsers(),
   'files': dbClient.nbFiles(),
