@@ -5,17 +5,12 @@ const { MongoClient } = require('mongodb');
 const host = process.env.DB_HOST || 'localhost';
 const port = process.env.DB_PORT || 27017 ;;
 const database =  process.env.DATABASE || "file_manager";
-const url = `mongodb://${host}:${port}/${database}`;
+const url = `mongodb://${host}:${port}`;
 
 class DbClient {
   constructor() {
-    this.client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
-    this.client.connect((err) => {
-      if (err) {
-        console.log(err);
-      }
-    });
-    
+    this.client = new MongoClient(url, { useUnifiedTopology: true });
+    this.client.connect();
   }
 
 
@@ -24,15 +19,17 @@ class DbClient {
   }
 
   async nbUsers() {
-    this.client.use(database);
-    const UserPromise = promisify(this.client.users.find()).bind(this.client);
-    return UserPromise();
+    const db = this.client.db(database);
+    const users = db.collection('users');
+    const countPromise = promisify(users.countDocuments).bind(users);
+    return countPromise();
   }
 
   async nbFiles() {
-    this.client.use(database);
-    const FilePromise = promisify(this.client.files.find()).bind(this.client);
-    return FilePromise();
+    const db = this.client.db(database);
+    const files = db.collection('files');
+    const countPromise = promisify(files.countDocuments).bind(files);
+    return countPromise();
   }
 }
 
