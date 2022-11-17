@@ -1,6 +1,6 @@
 const express = require('express');
 
-app = require('./server.js');
+app = require('../server.js');
 
 module.exports = function(index) {
 const status = app.get('/status', (req, res) => { 
