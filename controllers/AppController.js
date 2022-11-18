@@ -14,8 +14,8 @@ module.exports = new class AppController {
 
   async getStats(req, res) {
     const data = JSON.stringify({
-    'users': dbClient.nbUsers(),
-    'files': dbClient.nbFiles(),
+    'users': await dbClient.nbUsers(),
+    'files': await dbClient.nbFiles(),
   })
   res.send(data)
   }
