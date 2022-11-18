@@ -1,22 +1,22 @@
 import redisClient from "../utils/redis";
 import dbClient from "../utils/db";
-const express = require('express');
-const app = require('../server')
 
-const getStatus = () => {
-  const data = JSON.stringify({
-  'redis': redisClient.isAlive(),
-  'db': dbClient.isAlive(),
-})
-return data;
+
+new class AppController {
+  async getStatus() {
+    const data = JSON.stringify({
+    'redis': redisClient.isAlive(),
+    'db': dbClient.isAlive(),
+  })
+  return data;
+  }
+
+  async getStats() {
+    const data = JSON.stringify({
+    'users': dbClient.nbUsers(),
+    'files': dbClient.nbFiles(),
+  })
+  return data;
+  }
 }
-
-const getStats = () => {
-  const data = JSON.stringify({
-  'users': dbClient.nbUsers(),
-  'files': dbClient.nbFiles(),
-})
-return data;
-}
-
-module.exports = getStatus, getStats
+module.exports = AppController
