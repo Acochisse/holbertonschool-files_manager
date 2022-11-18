@@ -2,14 +2,14 @@ import redisClient from "../utils/redis";
 import dbClient from "../utils/db";
 
 
-module.exports = new class AppControler {
+module.exports = new class AppController {
   async getStatus(req, res) {
     const data = JSON.stringify({
     'redis': redisClient.isAlive(),
     'db': dbClient.isAlive(),
   })
   console.log(data);
-  req.send(data);
+  res.send(data);
   }
 
   async getStats(req, res) {
@@ -17,7 +17,7 @@ module.exports = new class AppControler {
     'users': dbClient.nbUsers(),
     'files': dbClient.nbFiles(),
   })
-  req.send(data)
+  res.send(data)
   }
 }
 
