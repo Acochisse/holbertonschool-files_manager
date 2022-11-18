@@ -1,16 +1,14 @@
 const express = require('express');
 
-const app = require('../server')
+const router = express.Router();
 const {getStats, getStatus} = require('../controllers/AppController')
 
-
-module.exports = (app) => {
-app.get('/status', (req, res) => {
+router.get('/status', (req, res) => {
   res.send(getStatus());
 })
 
-app.get('/stats', (req, res) => {
+router.get('/stats', (req, res) => {
   res.send(getStats());
 })
-}
 
+module.exports = router
