@@ -2,7 +2,7 @@ import redisClient from "../utils/redis";
 import dbClient from "../utils/db";
 
 
-class AppController {
+module.exports = new class AppControler {
   async getStatus() {
     const data = JSON.stringify({
     'redis': redisClient.isAlive(),
@@ -19,4 +19,4 @@ class AppController {
   return data;
   }
 }
-module.exports = AppController
+
