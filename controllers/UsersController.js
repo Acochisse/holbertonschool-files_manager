@@ -1,7 +1,6 @@
 import redisClient from "../utils/redis";
 import dbClient from "../utils/db";
 const SHA1 = require('sha1');
-const hash = SHA1.create()
 
 modules.exports = new class UsersController {
   async getUser(req, res) {
