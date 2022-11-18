@@ -4,6 +4,7 @@ const SHA1 = require('sha1');
 
 module.exports = new class UsersController {
   async getUser(req, res) {
+    console.log(req.params);
     if (!req.params.email) {
       res.status(400).send(new Error('Missing email'));
     }
