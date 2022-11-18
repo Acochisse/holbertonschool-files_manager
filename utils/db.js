@@ -13,8 +13,6 @@ class DbClient {
       
       if (client) {
         this.db = client.db(database);
-        this.users = this.db.collection('users');
-        this.files = this.db.collection('files');
       }
       if (err) {
         console.log(err);
@@ -28,11 +26,11 @@ class DbClient {
   }
 
   async nbUsers() {
-    return this.users.countDocuments();
+    return this.db.collection('users').countDocuments();
   }
 
   async nbFiles() {
-    return this.files.countDocuments();
+    return this.db.collection('files').countDocuments();
   }
 }
 
