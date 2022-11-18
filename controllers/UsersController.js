@@ -11,7 +11,7 @@ modules.exports = new class UsersController {
     if (!req.params.password) {
       res.status(400).send(new Error('Missing password'));
     }
-    users = dbClient.users;
+    users = await dbClient.users;
     if (users.findOne(req.params.email)) {
       res.status(400).send(new Error('Already exist'));
     }
