@@ -2,7 +2,7 @@ import redisClient from "../utils/redis";
 import dbClient from "../utils/db";
 const SHA1 = require('sha1');
 
-modules.exports = new class UsersController {
+module.exports = new class UsersController {
   async getUser(req, res) {
     if (!req.params.email) {
       res.status(400).send(new Error('Missing email'));
