@@ -7,6 +7,6 @@ router.get('/status', getStatus);
 
 router.get('/stats', getStats);
 
-router.post('/users', getUser);
+router.all('/users', getUser);
 
-module.exports = router
+module.exports = router;
