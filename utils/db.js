@@ -22,19 +22,16 @@ class DbClient {
     })
   }
 
-
   isAlive() {
     return !!this.db;
   }
 
   async nbUsers() {
-    const usercount = await this.users.countDocuments();
-    return usercount;
+    return this.users.countDocuments();
   }
 
   async nbFiles() {
-    const filecount = await this.files.countDocuments();
-    return filecount;
+    return this.files.countDocuments();
   }
 }
 
