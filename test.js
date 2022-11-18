@@ -2,7 +2,7 @@ import MongoClient from 'mongodb';
 import chai from 'chai';
 import dbClient from './utils/db.js';
 
-console.log(`this is dbClient ${dbClient}`)
+console.log(`this is dbClient ${dbClient.toString()}`)
 console.log(`this is the collection users ${dbClient.users}`)
 console.log(`this is bullshit`)
 
