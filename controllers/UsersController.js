@@ -19,4 +19,14 @@ module.exports = new class UsersController {
     const newUser = { id: userObj.insertedId, email };
     res.status(201).json(newUser);
     };
+
+    async getMe(req, res) {
+      const token = req.headers['x-token'];
+      const user = await redisClient.get(`auth_${token}`);
+  
+      if (!user) {
+        return res.status(401).json({error: 'Unauthorized'});
+      }
+      return res.status(200).send({email: user.email, id: user.id});
+    }
   };
