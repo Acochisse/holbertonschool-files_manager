@@ -3,7 +3,7 @@ import dbClient from '../utils/db';
 import sha1 from 'sha1';
 import { v4 as uuidv4 } from 'uuid';
 
-class AuthController {
+module.exports = new class AuthController {
   static async getConnect(request, response) {
     if (!request.headers.authorization || request.headers.authorization.indexOf('Basic ') === -1) {
       return response.status(401).json({ message: 'Missing Auth Header'});
@@ -39,6 +39,4 @@ class AuthController {
     response.status(204).end();
     return null;
   }
-}
-
-export default AuthController;
+};
