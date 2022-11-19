@@ -23,8 +23,9 @@ module.exports = new class FilesController {
       if (!parent) return response.status(400).json({ error: 'Parent not found' });
       if (type !== 'folder') return response.status(400).json({ error: 'Parent is not a folder' });
     }
+    
     const fileObj = {
-      userId,
+      userId: new mongo.ObjectID(user),
       name,
       type,
       isPublic,
@@ -32,19 +33,27 @@ module.exports = new class FilesController {
     };
 
     if (type === 'folder') {
-      const folder = await dbClient.files.insertOne(fileObj);
-      fileObj.userId = new mongo.ObjectId(user);
-      return response.status(201).json({ id: folder.insertedId });
-    }
-    if (type !== 'folder') {
-      const folderPath = process.env.FOLDER_PATH || '/tmp/files_manager';
-      if (!fs.existsSync(folderPath)) {
-        fs.mkdirSync(folderPath);
+      const insertFile = await dbClient.files.insertOne(fileObj);
+      return response.status(201).json(fileObj);
+    } else {
+      const FOLDER_PATH = process.env(FOLDER_PATH) || ('tmp/files_manager');
+      if (!fs.existsSync(FOLDER_PATH)) {
+        fs.mkdirSync(FOLDER_PATH);
       }
-      const pathId = uuidv4();
-      const localPath = (`${folderPath}/${pathId}`);
-      const saveFile = Buffer.from(data, 'base64')
-      await fs.promises.writeFile(localPath, saveFile.toString(), {flag: 'w+'});
+      const LocalPath = (`${FOLDER_PATH}/${uuidv4()}`);
+      const decodedData = Buffer.from(data, 'base64');
+      await fs.promises.writeFile(LocalPath, decodedData);
+      const OutFileObj = {
+        userId: new mongo.ObjectID(user),
+        name,
+        type,
+        isPublic,
+        parentId,
+        LocalPath: path.resolve(LocalPath),
+      };
+      await dbClient.files.insertOne(OutFileObj);
+      return response.status(201).json(outFileObj);
     }
   }
-};
+}
+  
