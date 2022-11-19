@@ -17,18 +17,17 @@ module.exports = new class FilesController {
     if (!name) return response.status(400).json({ error: 'Missing name' });
     if (!type) return response.status(400).json({ error: 'Missing type' });
     if (!data && type !== 'folder') return response.status(400).json({ error: 'Missing data' });
-    const files = await dbClient.files;
-    const file = await dbClient.files.findOne({ _id: parentId });
+    const parent = await dbClient.files.findOne({ _id: parentId });
     if (parentID !== 0) {
-      if (!file) return response.status(400).json({ error: 'Parent not found' });
-      if (file.type !== 'folder') return response.status(400).json({ error: 'Parent is not a folder' });
+      if (!parent) return response.status(400).json({ error: 'Parent not found' });
+      if (parent.type !== 'folder') return response.status(400).json({ error: 'Parent is not a folder' });
     }
     const fileObj = {
       userId: user,
-      name,
-      type,
-      isPublic,
-      parentId,
+      name: name,
+      type: type,
+      isPublic: isPublic,
+      parentId: parentId,
     };
 
     if (type !== 'folder') {
