@@ -8,10 +8,10 @@ module.exports = new class UsersController {
   async getUser(req, res) {
     const email = req.body.email;
     const password = req.body.password;
-    if (!req.body.email) {
+    if (!email) {
       res.status(400).json({error: 'Missing email'});
     }
-    if (!req.body.password) {
+    if (!password) {
       res.status(400).json({error: 'Missing password'});
     }
     const users = await dbClient.users;
