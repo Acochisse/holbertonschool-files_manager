@@ -16,7 +16,7 @@ module.exports = new class UsersController {
     const users = await dbClient.users;
     console.log(users);
     const user = await users.findOne({email});
-    console.log(users.findOne({email}))
+    console.log(user)
     if (user) {
       res.status(400).json({error: 'User already exists'});
     }
