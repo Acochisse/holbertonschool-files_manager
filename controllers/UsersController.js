@@ -1,7 +1,8 @@
 import redisClient from "../utils/redis";
 import dbClient from "../utils/db";
 import { json } from "express";
-const SHA1 = require('sha1');
+const crypto = require("crypto");
+
 
 module.exports = new class UsersController {
   async getUser(req, res) {
@@ -16,11 +17,11 @@ module.exports = new class UsersController {
     const users = await dbClient.users;
     const user = await users.findOne({email});
     if (user) {
-      res.status(400).json({error: 'User already exists'});
+      res.status(400).json({error: 'Already exist'});
     }
-    const pass = SHA1(req.body.password);
-    const newUser = {email, password:pass};
-    await dbClient.users.insertOne(newUser);
-    return res.status(201).json({ id: newUser.insertedId, email });
+    const hashed = crypto.createHash('SHA1').update(password).digest('hex');
+    const userObj = await users.insertOne({ email, password: hashed });
+    const newUser = { id: userObj.insertedId, email };
+    res.status(201).json(newUser);
     };
   };
