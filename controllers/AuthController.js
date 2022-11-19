@@ -32,6 +32,10 @@ module.exports = new class AuthController {
   async getDisconnect(request, response) {
     const token = request.headers['x-token'];
     const user = await redisClient.get(`auth_${token}`);
+
+    if (!user) {
+      return response.status(401).json({error: 'Unauthorized'});
+    }
     
     await redisClient.del(`auth_${token}`);
     response.status(204).end();
