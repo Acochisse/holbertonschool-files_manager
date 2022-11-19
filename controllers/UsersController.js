@@ -13,8 +13,8 @@ module.exports = new class UsersController {
       res.status(400).send(json({error: 'Missing password'}));
     }
     const users = await dbClient.users;
-    const uArray = await users.find({email}).toArray();
-    if (uArray.length >= 1) {
+    const user = await users.findOne({email});
+    if (!user) {
       res.status(400).send(json({error: 'User already exists'}));
     }
     const pass = SHA1(req.body.password);
