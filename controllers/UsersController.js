@@ -6,6 +6,7 @@ const SHA1 = require('sha1');
 module.exports = new class UsersController {
   async getUser(req, res) {
     const email = req.body.email;
+    const password = req.body.password;
     if (!req.body.email) {
       res.status(400).json({error: 'Missing email'});
     }
@@ -14,7 +15,7 @@ module.exports = new class UsersController {
     }
     const users = await dbClient.users;
     const user = await users.findOne({email});
-    if (!user) {
+    if (user) {
       res.status(400).json({error: 'User already exists'});
     }
     const pass = SHA1(req.body.password);
