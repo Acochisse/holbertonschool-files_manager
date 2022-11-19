@@ -8,7 +8,6 @@ module.exports = new class AppController {
     'redis': redisClient.isAlive(),
     'db': dbClient.isAlive(),
   })
-  console.log(data);
   res.status(200).send(data);
   }
 
