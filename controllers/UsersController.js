@@ -2,6 +2,7 @@ import redisClient from "../utils/redis";
 import dbClient from "../utils/db";
 import { json } from "express";
 const crypto = require("crypto");
+const mongo = require('mongodb');
 
 
 module.exports = new class UsersController {
