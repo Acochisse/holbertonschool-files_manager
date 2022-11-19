@@ -11,11 +11,10 @@ router.get('/stats', AppController.getStats);
 
 router.post('/users', UsersController.getUser);
 
-router.post('/connect', AuthController.getConnect);
+router.get('/connect', AuthController.getConnect);
 
-router.delete('/disconnect', AuthController.getDisconnect);
+router.get('/disconnect', AuthController.getDisconnect);
 
-router.get('/files', AuthController.getFiles);
 
 
 
