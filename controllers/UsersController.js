@@ -18,6 +18,7 @@ module.exports = new class UsersController {
     }
     const pass = SHA1(req.body.password);
     const newUser = {email:req.body.email, password:pass};
+    dbClient.users.insertOne(newUser);
     res.status(201).send(newUser);
     };
   };
