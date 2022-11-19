@@ -4,7 +4,7 @@ import sha1 from 'sha1';
 import { v4 as uuidv4 } from 'uuid';
 
 module.exports = new class AuthController {
-  static async getConnect(request, response) {
+  async getConnect(request, response) {
     if (!request.headers.authorization || request.headers.authorization.indexOf('Basic ') === -1) {
       return response.status(401).json({ message: 'Missing Auth Header'});
     }
@@ -29,7 +29,7 @@ module.exports = new class AuthController {
     return response.status(200).json({ token });
   }
 
-  static async getDisconnect(request, response) {
+  async getDisconnect(request, response) {
     const token = request.headers['x-token'];
     const user = await redisClient.get(`auth_${token}`);
     if (!user) {
