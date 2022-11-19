@@ -16,6 +16,8 @@ module.exports = new class FilesController {
     const { name, type, parentId, isPublic, data } = request.body;
     if (!name) return response.status(400).json({ error: 'Missing name' });
     if (!type) return response.status(400).json({ error: 'Missing type' });
+    if (!parentId) parentId = 0;
+    if (!isPublic) isPublic = false;
     if (!data && type !== 'folder') return response.status(400).json({ error: 'Missing data' });
 
     const files = await dbClient.files;
