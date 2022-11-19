@@ -3,6 +3,7 @@ const redisClient = require('../utils/redis');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
+const mongo = require('mongodb');
 
 module.exports = new class FilesController {
   async postFile(request, response) {
@@ -30,14 +31,16 @@ module.exports = new class FilesController {
       parentId,
     };
 
+    if (type === 'folder') {
+      const folder = await dbClient.files.insertOne(fileObj);
+      fileObj.userId = new mongo.ObjectId(user);
+      return response.status(201).json({ id: folder.insertedId });
+    }
     if (type !== 'folder') {
       const folderPath = process.env.FOLDER_PATH || '/tmp/files_manager';
       const localPath = path.join(folderPath, uuidv4());
       fs.writeFileSync;
       fileObj.localPath = localPath;
     }
-
-    const result = await dbClient.files.insertOne(fileObj);
-    return response.status(201).json(result.ops[0]);
   }
 };
