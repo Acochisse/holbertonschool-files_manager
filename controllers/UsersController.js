@@ -27,6 +27,6 @@ module.exports = new class UsersController {
       if (!user) {
         return res.status(401).json({error: 'Unauthorized'});
       }
-      return res.status(200).send({email: user.email, id: user.id});
+      return res.status(200).json({email: user.email, id: user.id});
     }
   };
