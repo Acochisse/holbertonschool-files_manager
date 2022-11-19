@@ -6,14 +6,9 @@ const crypto = require("crypto");
 
 module.exports = new class UsersController {
   async getUser(req, res) {
-    const email = req.body.email;
-    const password = req.body.password;
-    if (!email) {
-      res.status(400).json({error: 'Missing email'});
-    }
-    if (!password) {
-      res.status(400).json({error: 'Missing password'});
-    }
+    const { email, password } = req.body;
+    if (!email) return res.status(400).json({ error: 'Missing email' });
+    if (!password) return res.status(400).json({ error: 'Missing password' });
     const users = await dbClient.users;
     const user = await users.findOne({email});
     if (user) {
