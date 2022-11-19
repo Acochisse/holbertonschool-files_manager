@@ -38,9 +38,13 @@ module.exports = new class FilesController {
     }
     if (type !== 'folder') {
       const folderPath = process.env.FOLDER_PATH || '/tmp/files_manager';
-      const localPath = path.join(folderPath, uuidv4());
-      fs.writeFileSync;
-      fileObj.localPath = localPath;
+      if (!fs.existsSync(folderPath)) {
+        fs.mkdirSync(folderPath);
+      }
+      const pathId = uuidv4();
+      const localPath = (`${folderPath}/${pathId}`);
+      const saveFile = Buffer.from(data, 'base64')
+      await fs.promises.writeFile(localPath, saveFile.toString(), {flag: 'w+'});
     }
   }
 };
