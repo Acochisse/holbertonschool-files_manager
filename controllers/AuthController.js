@@ -13,7 +13,7 @@ module.exports = new class AuthController {
     const stringCred = Buffer.from(slice, 'base64').toString();
     const [email, pwd] = stringCred.split(':');
 
-    if (!email || !password){
+    if (!email || !pwd){
       return response.status(401).json({error: 'Unauthorized'});
     }
     const cred = {email, password: sha1(pwd)};
