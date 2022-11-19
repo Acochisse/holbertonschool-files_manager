@@ -17,7 +17,7 @@ module.exports = new class UsersController {
       res.status(400).send(new Error('Already exist'));
     }
     const pass = SHA1(req.body.password);
-    newUser = {email:req.body.email, password:pass};
+    const newUser = {email:req.body.email, password:pass};
     res.status(201).send(JSON.stringify(newUser))
     };
   };
