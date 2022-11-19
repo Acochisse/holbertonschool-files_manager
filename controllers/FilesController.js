@@ -21,7 +21,7 @@ module.exports = new class FilesController {
     const files = await dbClient.files;
     const file = await dbClient.files.findOne({ _id: parentId });
     if (parentId && !file) return response.status(400).json({ error: 'Parent not found' });
-    if (parentId && file.type !== 'folder') return response.status(400).json({ error: 'Parent is not a folder' });
+    if (parentId && type !== 'folder') return response.status(400).json({ error: 'Parent is not a folder' });
 
     const fileObj = {
       userId: user,
