@@ -12,7 +12,8 @@ module.exports = new class UsersController {
       res.status(400).send(new Error('Missing password'));
     }
     const users = await dbClient.users;
-    if (users.findOne(req.body.email)) {
+    const uArray = await users.find({email}).toArray();
+    if (uArray.length >= 1) {
       res.status(400).send(new Error('Already exist'));
     }
     const pass = hash(req.body.password);
