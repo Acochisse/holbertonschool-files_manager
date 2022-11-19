@@ -20,6 +20,6 @@ module.exports = new class UsersController {
     const pass = SHA1(req.body.password);
     const newUser = {email, password:pass};
     await dbClient.users.insertOne(newUser);
-    return res.status(201).send({ id: newUser.insertedId, email });
+    return res.status(201).json({ id: newUser.insertedId, email });
     };
   };
