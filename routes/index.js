@@ -8,6 +8,6 @@ router.get('/status', AppController.getStatus);
 
 router.get('/stats', AppController.getStats);
 
-router.all('/users', UsersController.getUser);
+router.post('/users', UsersController.getUser);
 
 module.exports = router;
