@@ -23,20 +23,21 @@ module.exports = new class FilesController {
       if (!parent) return response.status(400).json({ error: 'Parent not found' });
       if (type !== 'folder') return response.status(400).json({ error: 'Parent is not a folder' });
     }
-    //creating obj to be stored
-    const fileObj = {
-      userId: new mongo.ObjectId(user),
-      name,
-      type,
-      isPublic,
-      parentId, 
-    };
 
     //if type is folder 
     if (type === 'folder') {
+      const USERID = new mongo.ObjectId(user)
+      const fileObj = {
+        userId: USERID,
+        name,
+        type,
+        isPublic,
+        parentId, 
+      };
       const insertFile = await dbClient.files.insertOne(fileObj);
       return response.status(201).json({
         id: insertFile.insertedId,
+        userId: USERID,
         name,
         type,
         isPublic,
@@ -54,7 +55,7 @@ module.exports = new class FilesController {
       const decodedData = Buffer.from(data, 'base64');
       await fs.promises.writeFile(localPath, decodedData.toString(), {flag: 'w+'});
       const OutFileObj = {
-        userId: new mongo.ObjectId(user),
+        userId: USERID,
         name,
         type,
         isPublic,
@@ -67,7 +68,7 @@ module.exports = new class FilesController {
       return response.status(201).json(
         {
           id: afterInsert.insertedId,
-          userId:  new mongo.ObjectId(user),
+          userId:  USERID,
           name,
           type,
           isPublic,
