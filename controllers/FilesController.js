@@ -35,7 +35,13 @@ module.exports = new class FilesController {
     //if type is folder 
     if (type === 'folder') {
       const insertFile = await dbClient.files.insertOne(fileObj);
-      return response.status(201).json(fileObj);
+      return response.status(201).json({
+        id: insertFile.insertedId,
+        name,
+        type,
+        isPublic,
+        parentId
+      });
     }
 
     //if type is not folder create folder to store item in.
@@ -57,22 +63,16 @@ module.exports = new class FilesController {
       };
       await dbClient.files.insertOne(OutFileObj);
 
-      if (type === 'image'){
-        await fs.promises.writeFile(localPath, decodedData, { flag: 'w+', encoding: 'binary'});
-      }
-      else {
-      const OutFileObj = {
-        userId: new mongo.ObjectId(user),
-        name,
-        type,
-        isPublic,
-        parentId: (parentId),
-      };
-
-      console.log(`obj before insert ${JSON.stringify(OutFileObj)}`);
-      await dbClient.files.insertOne(OutFileObj);
-      console.log(`obj after insert ${JSON.stringify(OutFileObj)}`);
-      return response.status(201).json(OutFileObj);
+      const afterInsert = await dbClient.files.insertOne(OutFileObj);
+      return response.status(201).json(
+        {
+          id: afterInsert.insertedId,
+          userId:  new mongo.ObjectId(user),
+          name,
+          type,
+          isPublic,
+          parentId
+        }
+      );
       };
     }
-  }
