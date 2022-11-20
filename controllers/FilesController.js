@@ -19,7 +19,8 @@ module.exports = new class FilesController {
     if (!type) return response.status(400).json({ error: 'Missing type' });
     if (!data && type !== 'folder') return response.status(400).json({ error: 'Missing data' });
     if (parentId !== 0) {
-      const parent = await dbClient.files.findOne({ _id: parentId });
+      const dbParentID = new mongo.ObjectId(parentId)
+      const parent = await dbClient.files.findOne({ _id: dbParentID });
       if (!parent) return response.status(400).json({ error: 'Parent not found' });
       if (parent.type !== 'folder') return response.status(400).json({ error: 'Parent is not a folder' });
     }
@@ -46,7 +47,7 @@ module.exports = new class FilesController {
     }
     //
     //if type is not folder create folder to store item in.
-      const FOLDER_PATH = process.env.FOLDER_PATH || ('/tmp/files_manager');
+    const FOLDER_PATH = process.env.FOLDER_PATH || ('/tmp/files_manager');
 
     if (!fs.existsSync(FOLDER_PATH)) {
         fs.mkdirSync(FOLDER_PATH);
