@@ -91,8 +91,6 @@ module.exports = new class FilesController {
       const dbID = new mongo.ObjectId(id)
       const file = await dbClient.files.findOne({ _id: dbID });
       if (!file) return res.status(404).json({ error: 'Not found' });
-      if (file.userId !== user) return res.status(404).json({ error: 'Unauthorized' });
-
       return res.status(200).json(file);
     }
 
@@ -105,12 +103,6 @@ module.exports = new class FilesController {
       }
 //pagination
       const { parentId = 0, page = 0 } = req.query;
-      if (parentId !== 0) {
-        const dbParentID = new mongo.ObjectId(parentId);
-        const parent = await dbClient.files.findOne({ _id: dbParentID });
-        if (!parent) return res.status(400).json({ error: 'Parent not found' });
-        if (parent.type !== 'folder') return res.status(400).json({ error: 'Parent is not a folder' });
-      }
       const USERID = new mongo.ObjectId(user)
       const files = await dbClient.files.aggregate([
         { $match: { userId: USERID, parentId: parentId } },
