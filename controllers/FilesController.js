@@ -48,9 +48,20 @@ module.exports = new class FilesController {
         name,
         type,
         isPublic,
-        parentId,
+        parentId: parentId === 0 ? parentId : ObjectID(parentId),
         LocalPath: path.resolve(LocalPath),
       };
+      if (type === 'image'){
+        await fs.promises.writeFile(LocalPath, saveData, { flag: 'w+', encoding: 'binary'});
+      } else {
+        const OutFileObj = {
+          userId: new mongo.ObjectID(user),
+          name,
+          type,
+          isPublic,
+          parentId: parentId === 0 ? parentId : ObjectID(parentId),
+        }
+      }
       await dbClient.files.insertOne(OutFileObj);
       return response.status(201).json(OutFileObj);
     }
