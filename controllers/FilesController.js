@@ -90,10 +90,9 @@ module.exports = new class FilesController {
       const { id } = req.params;
       const dbID = new mongo.ObjectId(id);
       const file = await dbClient.files.findOne({ _id: dbID });
-      if (!file) return res.status(404).json({ error: 'Not found' });
-      // 95 fixed the check for this 404 but broke the good response :(
-      if (file.userId === user) return res.json(file);
-      return res.status(404).json({ error: 'Not found' });
+      if (!file || file.userId !== user) return res.status(404).json({ error: 'Not found' });
+      return res.json(file);
+
     }
 
     async getIndex(req, res) {
