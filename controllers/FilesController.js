@@ -51,20 +51,22 @@ module.exports = new class FilesController {
         parentId: parentId === 0 ? parentId : ObjectID(parentId),
         LocalPath: path.resolve(LocalPath),
       };
+      await dbClient.files.insertOne(OutFileObj);
       if (type === 'image'){
         await fs.promises.writeFile(LocalPath, saveData, { flag: 'w+', encoding: 'binary'});
       } else {
-        const OutFileObj = {
-          userId: new mongo.ObjectID(user),
-          name,
-          type,
-          isPublic,
-          parentId: parentId === 0 ? parentId : ObjectID(parentId),
-        }
-      }
+      const OutFileObj = {
+        userId: new mongo.ObjectID(user),
+        name,
+        type,
+        isPublic,
+        parentId: parentId === 0 ? parentId : ObjectID(parentId),
+      };
       await dbClient.files.insertOne(OutFileObj);
+      }
       return response.status(201).json(OutFileObj);
+      };
     }
   }
-}
+
   
