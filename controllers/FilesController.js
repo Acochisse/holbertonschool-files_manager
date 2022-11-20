@@ -53,7 +53,7 @@ module.exports = new class FilesController {
       };
       await dbClient.files.insertOne(OutFileObj);
       if (type === 'image'){
-        await fs.promises.writeFile(localPath, saveData, { flag: 'w+', encoding: 'binary'});
+        await fs.promises.writeFile(localPath, decodedData, { flag: 'w+', encoding: 'binary'});
       } else {
       const OutFileObj = {
         userId: new mongo.ObjectID(user),
