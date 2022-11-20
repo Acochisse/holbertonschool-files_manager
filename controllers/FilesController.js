@@ -77,4 +77,39 @@ module.exports = new class FilesController {
       }
     );
     };
-  }
+  
+
+  async getIndex(request, response) {
+    const token = request.headers['x-token'];
+    const user = await redisClient.get(`auth_${token}`);
+
+    if (!user) {
+      return response.status(401).json({error: 'Unauthorized'});
+    }
+
+    const { parentId = 0 } = request.query;
+    const USERID = new mongo.ObjectId(user)
+    const dbParentID = new mongo.ObjectId(parentId)
+    const files = await dbClient.files.find({ userId: USERID, parentId: dbParentID }).toArray();
+    return response.status(200).json(files);
+  };
+
+
+  async getShow(request, response) {
+    const token = request.headers['x-token'];
+    const user = await redisClient.get(`auth_${token}`);
+
+    if (!user) {
+      return response.status(401).json({error: 'Unauthorized'});
+    }
+
+    const { id } = request.params;
+    const USERID = new mongo.ObjectId(user)
+    const dbID = new mongo.ObjectId(id)
+    const file = await dbClient.files.findOne({ _id: dbID, userId: USERID });
+    if (!file) return response.status(404).json({ error: 'File not found' });
+    return response.status(200).json(file);
+  };
+};
+
+
