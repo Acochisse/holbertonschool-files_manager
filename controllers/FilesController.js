@@ -37,7 +37,8 @@ module.exports = new class FilesController {
       return response.status(201).json(fileObj);
     } else {
       const FOLDER_PATH = process.env.FOLDER_PATH || ('/tmp/files_manager');
-      if (!fs.existsSync(FOLDER_PATH)) {
+
+    if (!fs.existsSync(FOLDER_PATH)) {
         fs.mkdirSync(FOLDER_PATH);
       }
       const localPath = (`${FOLDER_PATH}/${uuidv4()}`);
@@ -48,7 +49,7 @@ module.exports = new class FilesController {
         name,
         type,
         isPublic,
-        parentId: parentId === 0 ? parentId : ObjectId(parentId),
+        parentId: (parentId),
         localPath: path.resolve(localPath),
       };
       await dbClient.files.insertOne(OutFileObj);
@@ -60,7 +61,7 @@ module.exports = new class FilesController {
         name,
         type,
         isPublic,
-        parentId: parentId === 0 ? parentId : ObjectId(parentId),
+        parentId: (parentId),
       };
       await dbClient.files.insertOne(OutFileObj);
       }
