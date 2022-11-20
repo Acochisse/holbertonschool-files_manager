@@ -37,8 +37,8 @@ module.exports = new class FilesController {
       const insertFile = await dbClient.files.insertOne(fileObj);
       return response.status(201).json(fileObj);
     }
+
     //if type is not folder create folder to store item in.
-    else {
       const FOLDER_PATH = process.env.FOLDER_PATH || ('/tmp/files_manager');
 
     if (!fs.existsSync(FOLDER_PATH)) {
@@ -69,10 +69,9 @@ module.exports = new class FilesController {
         parentId: (parentId),
       };
 
-      console.log(`obj before insert ${OutFileObj}`);
+      console.log(`obj before insert ${JSON.stringify(OutFileObj)}`);
       await dbClient.files.insertOne(OutFileObj);
-      console.log(`obj after insert ${OutFileObj}`);
-      }
+      console.log(`obj after insert ${JSON.stringify(OutFileObj)}`);
       return response.status(201).json(OutFileObj);
       };
     }
