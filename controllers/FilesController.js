@@ -51,13 +51,7 @@ module.exports = new class FilesController {
     if (!fs.existsSync(FOLDER_PATH)) {
         fs.mkdirSync(FOLDER_PATH);
       }
-
-    if (parentId !== 0){
-      const localPath = (`${FOLDER_PATH}/${parentId}/${uuidv4()}`);
-    }
-    else {
     const localPath = (`${FOLDER_PATH}/${uuidv4()}`);
-    }
     //do we need to build a parent path if there is a parent?
     const decodedData = Buffer.from(data, 'base64');
     await fs.promises.writeFile(localPath, decodedData.toString(), {flag: 'w+'});
