@@ -32,7 +32,7 @@ module.exports = new class FilesController {
       parentId, 
     };
 
-    if (type === 'folder') {
+    if (type !== 'folder') {
       const insertFile = await dbClient.files.insertOne(fileObj);
       return response.status(201).json(fileObj);
     } else {
@@ -40,7 +40,7 @@ module.exports = new class FilesController {
       if (!fs.existsSync(FOLDER_PATH)) {
         fs.mkdirSync(FOLDER_PATH);
       }
-      const LocalPath = (`${FOLDER_PATH}/${uuidv4()}`);
+      const localPath = (`${FOLDER_PATH}/${uuidv4()}`);
       const decodedData = Buffer.from(data, 'base64');
       await fs.promises.writeFile(LocalPath, decodedData.toString(), {flag: 'w+'});
       const OutFileObj = {
@@ -49,7 +49,7 @@ module.exports = new class FilesController {
         type,
         isPublic,
         parentId: parentId === 0 ? parentId : ObjectID(parentId),
-        LocalPath: path.resolve(LocalPath),
+        localPath: path.resolve(localPath),
       };
       await dbClient.files.insertOne(OutFileObj);
       if (type === 'image'){
