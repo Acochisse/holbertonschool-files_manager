@@ -23,14 +23,14 @@ module.exports = new class UsersController {
 
     async getMe(req, res) {
       const token = req.headers['x-token'];
-      const user = await redisClient.get(`auth_${token}`);
-      const uID = new mongo.ObjectID(user);
-      const dbUser = await dbClient.users.findOne({ _id: uID});
+      const id = await redisClient.get(`auth_${token}`);
+      const objID = new mongo.ObjectID(id);
+      const user = await dbClient.users.findOne({ _id: objID});
 
-      if (!dbUser) {
+      if (!user) {
         return res.status(401).json({error: 'Unauthorized'});
       }
       
-      return res.status(200).json({id: dbUser.id, email: dbUser.email});
+      return res.json({id, email: user.email});
     }
   };
