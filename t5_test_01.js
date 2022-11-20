@@ -41,7 +41,7 @@ describe('POST /files', () => {
             database: process.env.DB_DATABASE || 'files_manager'
         };
         return new Promise((resolve) => {
-            MongoClient.connect(`mongodb://${dbInfo.host}:${dbInfo.port}/${dbInfo.database}`, async (err, client) => {
+            MongoClient.connect(`mongodb://${dbInfo.host}:${dbInfo.port}/${dbInfo.database}`,{ useUnifiedTopology: true}, async (err, client) => {
                 testClientDb = client.db(dbInfo.database);
             
                 await testClientDb.collection('users').deleteMany({})
