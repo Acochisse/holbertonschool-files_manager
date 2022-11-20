@@ -21,10 +21,10 @@ module.exports = new class FilesController {
     if (parentId !== 0) {
       const parent = await dbClient.files.findOne({ _id: parentId });
       if (!parent) return response.status(400).json({ error: 'Parent not found' });
-      if (type !== 'folder') return response.status(400).json({ error: 'Parent is not a folder' });
+      if (parent.type !== 'folder') return response.status(400).json({ error: 'Parent is not a folder' });
     }
     const USERID = new mongo.ObjectId(user)
-    
+
     //if type is folder 
     if (type === 'folder') {
       const fileObj = {
