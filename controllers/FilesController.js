@@ -32,7 +32,7 @@ module.exports = new class FilesController {
       parentId, 
     };
 
-    if (type !== 'folder') {
+    if (type === 'folder') {
       const insertFile = await dbClient.files.insertOne(fileObj);
       return response.status(201).json(fileObj);
     } else {
@@ -42,7 +42,7 @@ module.exports = new class FilesController {
       }
       const localPath = (`${FOLDER_PATH}/${uuidv4()}`);
       const decodedData = Buffer.from(data, 'base64');
-      await fs.promises.writeFile(LocalPath, decodedData.toString(), {flag: 'w+'});
+      await fs.promises.writeFile(localPath, decodedData.toString(), {flag: 'w+'});
       const OutFileObj = {
         userId: new mongo.ObjectID(user),
         name,
@@ -53,7 +53,7 @@ module.exports = new class FilesController {
       };
       await dbClient.files.insertOne(OutFileObj);
       if (type === 'image'){
-        await fs.promises.writeFile(LocalPath, saveData, { flag: 'w+', encoding: 'binary'});
+        await fs.promises.writeFile(localPath, saveData, { flag: 'w+', encoding: 'binary'});
       } else {
       const OutFileObj = {
         userId: new mongo.ObjectID(user),
