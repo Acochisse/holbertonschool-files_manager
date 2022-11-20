@@ -25,7 +25,7 @@ module.exports = new class FilesController {
     }
     
     const fileObj = {
-      userId: new mongo.ObjectID(user),
+      userId: new mongo.ObjectId(user),
       name,
       type,
       isPublic,
@@ -44,11 +44,11 @@ module.exports = new class FilesController {
       const decodedData = Buffer.from(data, 'base64');
       await fs.promises.writeFile(localPath, decodedData.toString(), {flag: 'w+'});
       const OutFileObj = {
-        userId: new mongo.ObjectID(user),
+        userId: new mongo.ObjectId(user),
         name,
         type,
         isPublic,
-        parentId: parentId === 0 ? parentId : ObjectID(parentId),
+        parentId: parentId === 0 ? parentId : ObjectId(parentId),
         localPath: path.resolve(localPath),
       };
       await dbClient.files.insertOne(OutFileObj);
@@ -56,11 +56,11 @@ module.exports = new class FilesController {
         await fs.promises.writeFile(localPath, decodedData, { flag: 'w+', encoding: 'binary'});
       } else {
       const OutFileObj = {
-        userId: new mongo.ObjectID(user),
+        userId: new mongo.ObjectId(user),
         name,
         type,
         isPublic,
-        parentId: parentId === 0 ? parentId : ObjectID(parentId),
+        parentId: parentId === 0 ? parentId : ObjectId(parentId),
       };
       await dbClient.files.insertOne(OutFileObj);
       }
