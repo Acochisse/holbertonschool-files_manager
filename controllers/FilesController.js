@@ -23,10 +23,10 @@ module.exports = new class FilesController {
       if (!parent) return response.status(400).json({ error: 'Parent not found' });
       if (type !== 'folder') return response.status(400).json({ error: 'Parent is not a folder' });
     }
-
+    const USERID = new mongo.ObjectId(user)
+    
     //if type is folder 
     if (type === 'folder') {
-      const USERID = new mongo.ObjectId(user)
       const fileObj = {
         userId: USERID,
         name,
@@ -44,7 +44,7 @@ module.exports = new class FilesController {
         parentId
       });
     }
-
+    //
     //if type is not folder create folder to store item in.
       const FOLDER_PATH = process.env.FOLDER_PATH || ('/tmp/files_manager');
 
@@ -62,7 +62,6 @@ module.exports = new class FilesController {
         parentId: (parentId),
         localPath: path.resolve(localPath),
       };
-      await dbClient.files.insertOne(OutFileObj);
 
       const afterInsert = await dbClient.files.insertOne(OutFileObj);
       return response.status(201).json(
