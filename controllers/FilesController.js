@@ -36,7 +36,7 @@ module.exports = new class FilesController {
       const insertFile = await dbClient.files.insertOne(fileObj);
       return response.status(201).json(fileObj);
     } else {
-      const FOLDER_PATH = process.env.FOLDER_PATH || ('tmp/files_manager');
+      const FOLDER_PATH = process.env.FOLDER_PATH || ('/tmp/files_manager');
       if (!fs.existsSync(FOLDER_PATH)) {
         fs.mkdirSync(FOLDER_PATH);
       }
