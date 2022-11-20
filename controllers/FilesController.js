@@ -23,7 +23,7 @@ module.exports = new class FilesController {
       if (!parent) return response.status(400).json({ error: 'Parent not found' });
       if (type !== 'folder') return response.status(400).json({ error: 'Parent is not a folder' });
     }
-    
+    //creating obj to be stored
     const fileObj = {
       userId: new mongo.ObjectId(user),
       name,
@@ -32,10 +32,13 @@ module.exports = new class FilesController {
       parentId, 
     };
 
+    //if type is folder 
     if (type === 'folder') {
       const insertFile = await dbClient.files.insertOne(fileObj);
       return response.status(201).json(fileObj);
-    } else {
+    }
+    //if type is not folder create folder to store item in.
+    else {
       const FOLDER_PATH = process.env.FOLDER_PATH || ('/tmp/files_manager');
 
     if (!fs.existsSync(FOLDER_PATH)) {
@@ -53,9 +56,11 @@ module.exports = new class FilesController {
         localPath: path.resolve(localPath),
       };
       await dbClient.files.insertOne(OutFileObj);
+
       if (type === 'image'){
         await fs.promises.writeFile(localPath, decodedData, { flag: 'w+', encoding: 'binary'});
-      } else {
+      }
+      else {
       const OutFileObj = {
         userId: new mongo.ObjectId(user),
         name,
@@ -63,11 +68,12 @@ module.exports = new class FilesController {
         isPublic,
         parentId: (parentId),
       };
+
+      console.log(`obj before insert ${OutFileObj}`);
       await dbClient.files.insertOne(OutFileObj);
+      console.log(`obj after insert ${OutFileObj}`);
       }
       return response.status(201).json(OutFileObj);
       };
     }
   }
-
-  
