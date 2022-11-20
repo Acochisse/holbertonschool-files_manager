@@ -29,7 +29,7 @@ module.exports = new class FilesController {
       name,
       type,
       isPublic,
-      parentId,
+      parentId, 
     };
 
     if (type === 'folder') {
@@ -52,7 +52,7 @@ module.exports = new class FilesController {
         LocalPath: path.resolve(LocalPath),
       };
       await dbClient.files.insertOne(OutFileObj);
-      return response.status(201).json(outFileObj);
+      return response.status(201).json(OutFileObj);
     }
   }
 }
