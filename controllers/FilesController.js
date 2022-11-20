@@ -90,8 +90,9 @@ module.exports = new class FilesController {
       const { id } = req.params;
       const dbID = new mongo.ObjectId(id);
       const file = await dbClient.files.findOne({ _id: dbID });
-      if (!file || file.userId !== user) return res.status(404).json({ error: 'Not found' });
-      return res.json(file);
+      if (!file) return res.status(404).json({ error: 'File not found' });
+      if (user !== file.userId.toString()) return res.status(404).send({ error: 'Not found' });
+      return res.status(200).json(file);
 
     }
 
