@@ -42,7 +42,7 @@ module.exports = new class FilesController {
       }
       const LocalPath = (`${FOLDER_PATH}/${uuidv4()}`);
       const decodedData = Buffer.from(data, 'base64');
-      await fs.promises.writeFile(LocalPath, decodedData);
+      await fs.promises.writeFile(LocalPath, decodedData.toString(), {flag: 'w+'});
       const OutFileObj = {
         userId: new mongo.ObjectID(user),
         name,
