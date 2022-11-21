@@ -104,24 +104,36 @@ module.exports = new class FilesController {
         return res.status(401).json({error: 'Unauthorized'});
       }
 //pagination
-      //GET /files with no parentId and no page, response 200 with page
-      //Get /files with parentId and no page, response 200 with page
-      //Get /files with no parentId and page, response 200 with page
+    /*GET /files should retrieve all users file documents for a specific parentId and with pagination:
+
+Retrieve the user based on the token:
+If not found, return an error Unauthorized with a status code 401
+if the user is not authenticated, they can still see the public files
+Based on the query parameters parentId and page, return the list of file document
+parentId:
+No validation of parentId needed - if the parentId is not linked to any user folder, returns an empty list
+By default, parentId is equal to 0 = the root
+Pagination:
+Each page should be 20 items max
+page query parameter starts at 0 for the first page. If equals to 1, it means it’s the second page (form the 20th to the 40th), etc…
+Pagination can be done directly by the aggregate of MongoDB
+
+if parentId is doesn't exist then use user id to build the pagination with mongodb aggregate
+*/
       const { parentId = 0, page = 0 } = req.query;
-      const USERID = new mongo.ObjectId(user);
+      const USERID = new mongo.ObjectId(user)
       const dbParentID = new mongo.ObjectId(parentId);
       const parent = await dbClient.files.findOne({ _id: dbParentID });
+      if (!parent) parent = USERID;
+      
+      if (parent.type !== 'folder') return res.status(400).json({ error: 'Parent is not a folder' });
       const files = await dbClient.files.aggregate([
-        { $match: { userId: USERID, parentId: dbParentID } },
+        { $match: { parentId: dbParentID } },
         { $skip: page * 20 },
         { $limit: 20 },
       ]).toArray();
-      console.log(files.toString());
-      console.log(files.length);
-      //if (parentId !== 0 && !parent) return res.status(200).json([])
-
-
       return res.status(200).json(files);
+
     }
   
 
