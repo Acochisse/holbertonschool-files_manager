@@ -112,33 +112,15 @@ module.exports = new class FilesController {
       const dbParentID = new mongo.ObjectId(parentId);
       const parent = await dbClient.files.findOne({ _id: dbParentID });
       //if gate if parent !== 0
-      if (parentId === 0){
-        const files = await dbClient.files.aggregate([
-          { $skip: page * 20 },
-          { $limit: 20 },
-        ]);
-      } else {
       const files = await dbClient.files.aggregate([
-        { $match: { parentId: parentId } },
+        { $match: { parentId: parentID } },
         { $skip: page * 20 },
         { $limit: 20 },
-      ]);
-      };
-      const resFiles = [];
-      files.forEach((file) => {
-        resFile = {
-          id: file._id,
-          userId: file.userId,
-          name: file.name,
-          type: file.type,
-          isPublic: file.isPublic,
-          parentId: file.parentId
-        }
-        resFiles.append(resFile);
-      })
+      ]).toArray();
+      //if (parentId !== 0 && !parent) return res.status(200).json([])
 
 
-      return res.status(200).json(resFiles);
+      return res.status(200).json(files);
     }
   
 
