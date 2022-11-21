@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
 const mongo = require('mongodb');
+const mime = require('mime-types')
 
 module.exports = new class FilesController {
   async postFile(request, response) {
@@ -162,5 +163,27 @@ module.exports = new class FilesController {
     let updateFile = await dbClient.files.updateOne({ _id: dbID }, { $set: { isPublic: false } });
     updateFile = await dbClient.files.findOne({ _id: dbID })
     return res.status(200).json(updateFile);
+  }
+
+  async getFile() {
+    // auth
+    const token = req.headers['x-token'];
+    const user = await redisClient.get(`auth_${token}`);
+
+    // id belongs to file
+    const { id } = req.params;
+    const dbID = new mongo.ObjectId(id);
+    const file = await dbClient.files.findOne({ _id: dbID });
+    if (!file) return res.status(404).json({ error: 'Not found' });
+    if (file.isPublic === false && !user){
+      return res.status(404).json({error: 'Not found'});
+    }
+    if (file.isPublic === false && user.id !== file.userId) {
+      return res.status(404).json({error: 'Not found'});
+    }
+    if (file.type === 'folder') {
+      return res.status(400).json({error: "A folder doesn't have content"})
+    }
+
   }
 }
