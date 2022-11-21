@@ -107,18 +107,13 @@ module.exports = new class FilesController {
       //GET /files with no parentId and no page, response 200 with page
       //Get /files with parentId and no page, response 200 with page
       //Get /files with no parentId and page, response 200 with page
-      const { parentId, page = 0 } = req.query;
+      const { parentId = 0, page = 0 } = req.query;
       const USERID = new mongo.ObjectId(user);
       const dbParentID = new mongo.ObjectId(parentId);
       const parent = await dbClient.files.findOne({ _id: dbParentID });
-      if (parentId) {
-        const files = await dbClient.files.aggregate([
-          { $match: { parentId: dbParentID } },
-          { $skip: page * 20 },
-          { $limit: 20 },
-        ]).toArray();
-      }
+      //if gate if parent !== 0
       const files = await dbClient.files.aggregate([
+        { $match: { userId: USERID, parentId: dbParentID } },
         { $skip: page * 20 },
         { $limit: 20 },
       ]).toArray();
