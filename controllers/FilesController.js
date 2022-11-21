@@ -116,7 +116,9 @@ module.exports = new class FilesController {
         { $skip: page * 20 },
         { $limit: 20 },
       ]).toArray();
-      if (parentId !== 0 && !parent) return res.status(200).json([])
+      console.log(files.toString());
+      console.log(files.length);
+      //if (parentId !== 0 && !parent) return res.status(200).json([])
 
 
       return res.status(200).json(files);
