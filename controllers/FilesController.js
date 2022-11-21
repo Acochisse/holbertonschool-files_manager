@@ -172,7 +172,7 @@ module.exports = new class FilesController {
     if (!file) return res.status(404).json({ error: 'Not found' });
     if (user !== file.userId.toString()) return res.status(404).send({ error: 'Not found' });
     if (file.isPublic === false) return res.status(404).json({ error: 'Not found' });
-    if (file.type === 'folder') return res.status(400).json({ error: 'A folder doesn\'t have content' });
+    if (file.type === 'folder') return res.status(400).json({ error: "A folder doesn't have content" });
     const fileContent = await fs.readFile(`${__dirname}/../files/${file.name}`);
     const mimeType = mime.lookup(file.name);
     return res.status(200).type(mimeType).send(fileContent);
