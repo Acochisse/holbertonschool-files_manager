@@ -111,8 +111,9 @@ module.exports = new class FilesController {
       const USERID = new mongo.ObjectId(user);
       const dbParentID = new mongo.ObjectId(parentId);
       const parent = await dbClient.files.findOne({ _id: dbParentID });
+      // remove userid from match for next test
       const files = await dbClient.files.aggregate([
-        { $match: { userId: USERID, parentId: dbParentID } },
+        { $match: { userId: USERID, parentId: parentId } },
         { $skip: page * 20 },
         { $limit: 20 },
       ]).toArray();
@@ -139,7 +140,7 @@ module.exports = new class FilesController {
     if (user !== file.userId.toString()) return res.status(404).send({ error: 'Not found' });
     if (file.isPublic === true) return res.status(200).json(file);
     const updateFile = await dbClient.files.updateOne({ _id: dbID }, { $set: { isPublic: true } });
-    return res.status(200).json(file);
+    return res.status(200).json(updateFile);
   }
 
   async putUnpublish(req, res) {
@@ -158,6 +159,6 @@ module.exports = new class FilesController {
     if (user !== file.userId.toString()) return res.status(404).send({ error: 'Not found' });
     if (file.isPublic === false) return res.status(200).json(file);
     const updateFile = await dbClient.files.updateOne({ _id: dbID }, { $set: { isPublic: false } });
-    return res.status(200).json(file);
+    return res.status(200).json(updateFile);
   }
 }
