@@ -107,6 +107,7 @@ module.exports = new class FilesController {
       //GET /files with no parentId and no page, response 200 with page
       //Get /files with parentId and no page, response 200 with page
       //Get /files with no parentId and page, response 200 with page
+<<<<<<< HEAD
       const { parentId, page = 0 } = req.query;
       const USERID = new mongo.ObjectId(user);
       const dbParentID = new mongo.ObjectId(parentId);
@@ -124,6 +125,22 @@ module.exports = new class FilesController {
           { $limit: 20 },
         ]).toArray();
       }
+=======
+      const { parentId = 0, page = 0 } = req.query;
+      const USERID = new mongo.ObjectId(user);
+      const dbParentID = new mongo.ObjectId(parentId);
+      const parent = await dbClient.files.findOne({ _id: dbParentID });
+      const files = await dbClient.files.aggregate([
+        { $match: { userId: USERID, parentId: dbParentID } },
+        { $skip: page * 20 },
+        { $limit: 20 },
+      ]).toArray();
+      console.log(files.toString());
+      console.log(files.length);
+      //if (parentId !== 0 && !parent) return res.status(200).json([])
+
+
+>>>>>>> parent of ae9bd81... working on 6 again
       return res.status(200).json(files);
     }
   
