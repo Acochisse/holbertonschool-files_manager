@@ -4,7 +4,6 @@ const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
 const mongo = require('mongodb');
-const mime = require('mime-types')
 
 module.exports = new class FilesController {
   async postFile(request, response) {
@@ -112,9 +111,8 @@ module.exports = new class FilesController {
       const USERID = new mongo.ObjectId(user);
       const dbParentID = new mongo.ObjectId(parentId);
       const parent = await dbClient.files.findOne({ _id: dbParentID });
-      // remove userid from match for next test
       const files = await dbClient.files.aggregate([
-        { $match: { userId: USERID, parentId: parentId } },
+        { $match: { userId: USERID, parentId: dbParentID } },
         { $skip: page * 20 },
         { $limit: 20 },
       ]).toArray();
@@ -140,9 +138,8 @@ module.exports = new class FilesController {
     if (!file) return res.status(404).json({ error: 'Not found' });
     if (user !== file.userId.toString()) return res.status(404).send({ error: 'Not found' });
     if (file.isPublic === true) return res.status(200).json(file);
-    let updateFile = await dbClient.files.updateOne({ _id: dbID }, { $set: { isPublic: true } });
-    updateFile = await dbClient.files.findOne({ _id: dbID })
-    return res.status(200).json(updateFile);
+    const updateFile = await dbClient.files.updateOne({ _id: dbID }, { $set: { isPublic: true } });
+    return res.status(200).json();
   }
 
   async putUnpublish(req, res) {
@@ -160,30 +157,26 @@ module.exports = new class FilesController {
     if (!file) return res.status(404).json({ error: 'Not found' });
     if (user !== file.userId.toString()) return res.status(404).send({ error: 'Not found' });
     if (file.isPublic === false) return res.status(200).json(file);
-    let updateFile = await dbClient.files.updateOne({ _id: dbID }, { $set: { isPublic: false } });
-    updateFile = await dbClient.files.findOne({ _id: dbID })
-    return res.status(200).json(updateFile);
+    const updateFile = await dbClient.files.updateOne({ _id: dbID }, { $set: { isPublic: false } });
+    return res.status(200).json(file);
   }
 
-  async getFile() {
-    // auth
+  async getFile(req, res) {
+// auth
     const token = req.headers['x-token'];
     const user = await redisClient.get(`auth_${token}`);
-
-    // id belongs to file
+    if (!user) {
+      return res.status(401).json({error: 'Unauthorized'});
+    }
     const { id } = req.params;
     const dbID = new mongo.ObjectId(id);
     const file = await dbClient.files.findOne({ _id: dbID });
     if (!file) return res.status(404).json({ error: 'Not found' });
-    if (file.isPublic === false && !user){
-      return res.status(404).json({error: 'Not found'});
-    }
-    if (file.isPublic === false && user.id !== file.userId) {
-      return res.status(404).json({error: 'Not found'});
-    }
-    if (file.type === 'folder') {
-      return res.status(400).json({error: "A folder doesn't have content"})
-    }
-
+    if (user !== file.userId.toString()) return res.status(404).send({ error: 'Not found' });
+    if (file.isPublic === false) return res.status(404).json({ error: 'Not found' });
+    if (file.type === 'folder') return res.status(400).json({ error: 'A folder doesn\'t have content' });
+    const fileContent = await fs.readFile(`${__dirname}/../files/${file.name}`);
+    const mimeType = mime.lookup(file.name);
+    return res.status(200).type(mimeType).send(fileContent);
   }
 }
