@@ -165,9 +165,7 @@ module.exports = new class FilesController {
 // auth
     const token = req.headers['x-token'];
     const user = await redisClient.get(`auth_${token}`);
-    if (!user) {
-      return res.status(401).json({error: 'Unauthorized'});
-    }
+
     const { id } = req.params;
     const dbID = new mongo.ObjectId(id);
     const file = await dbClient.files.findOne({ _id: dbID });
