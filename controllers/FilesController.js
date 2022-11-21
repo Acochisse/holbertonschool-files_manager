@@ -111,8 +111,9 @@ module.exports = new class FilesController {
       const USERID = new mongo.ObjectId(user);
       const dbParentID = new mongo.ObjectId(parentId);
       const parent = await dbClient.files.findOne({ _id: dbParentID });
+      if (parentId !== 0 && !parent) parent === USERID;
       const files = await dbClient.files.aggregate([
-        { $match: { userId: USERID, parentId: dbParentID } },
+        { $match: { parentId: parent } },
         { $skip: page * 20 },
         { $limit: 20 },
       ]).toArray();
