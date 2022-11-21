@@ -138,7 +138,7 @@ module.exports = new class FilesController {
     const file = await dbClient.files.findOne({ _id: dbID });
     if (!file) return res.status(404).json({ error: 'Not found' });
     if (user !== file.userId.toString()) return res.status(404).send({ error: 'Not found' });
-    if (file.isPublic === true) return res.status(200).json(file);
+    //if (file.isPublic === true) return res.status(200).json(file);
     const updateFile = await dbClient.files.updateOne({ _id: dbID }, { $set: { isPublic: true } });
     return res.status(200).json(updateFile);
   }
@@ -157,7 +157,7 @@ module.exports = new class FilesController {
 // if dbID.isPublic === false return
     if (!file) return res.status(404).json({ error: 'Not found' });
     if (user !== file.userId.toString()) return res.status(404).send({ error: 'Not found' });
-    if (file.isPublic === false) return res.status(200).json(file);
+    //if (file.isPublic === false) return res.status(200).json(file);
     const updateFile = await dbClient.files.updateOne({ _id: dbID }, { $set: { isPublic: false } });
     return res.status(200).json(updateFile);
   }
