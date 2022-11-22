@@ -110,7 +110,7 @@ module.exports = new class FilesController {
     const { parentId = 0, page = 0 } = req.query;
     const USERID = new mongo.ObjectId(user);
     const dbParentID = new mongo.ObjectId(parentId);
-    const parent = await dbClient.files.findOne({ _id: dbParentID });
+    const parent = await dbClient.files.findOne({ _id: parentId });
     // if gate if parent !== 0
     const files = await dbClient.files.aggregate([
       { $match: { parentId: parentID } },
