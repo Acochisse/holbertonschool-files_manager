@@ -1,16 +1,14 @@
-//const { promisify } = require('util');
-const mongodb = require('mongodb');
+// const { promisify } = require('util');
 const { MongoClient } = require('mongodb');
 
 const host = process.env.MONGO_HOST || 'localhost';
-const port = process.env.MONGO_PORT || 27017 ;
-const database =  process.env.MONGO_DB || "files_manager";
+const port = process.env.MONGO_PORT || 27017;
+const database = process.env.MONGO_DB || 'files_manager';
 const url = `mongodb://${host}:${port}`;
 
 class DbClient {
   constructor() {
-    MongoClient.connect(url, { useUnifiedTopology: true}, (err, client) => {
-      
+    MongoClient.connect(url, { useUnifiedTopology: true }, (err, client) => {
       if (client) {
         this.db = client.db(database);
         this.users = this.db.collection('users');
@@ -20,7 +18,7 @@ class DbClient {
         console.log(err);
         this.db = false;
       }
-    })
+    });
   }
 
   isAlive() {
@@ -36,6 +34,5 @@ class DbClient {
   }
 }
 
-
-const dbClient = new DbClient;
+const dbClient = new DbClient();
 module.exports = dbClient;

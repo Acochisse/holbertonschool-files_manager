@@ -1,11 +1,4 @@
-//script that creates the class RedisClient
-//RedisClient should have:
-// the constructor that creates a client to Redis:
-// any error of the redis client must be displayed in the console (you should use on('error') of the redis client)
-// a function isAlive that returns true when the connection to Redis is a success otherwise, false
-// an asynchronous function get that takes a string key as argument and returns the Redis value stored for this key
-// an asynchronous function set that takes a string key, a value and a duration in second as arguments to store it in Redis (with an expiration set by the duration argument)
-// an asynchronous function del that takes a string key as argument and remove the value in Redis for this key
+// script that creates the class RedisClient
 const redis = require('redis');
 const { promisify } = require('util');
 
@@ -14,8 +7,8 @@ class RedisClient {
     this.client = redis.createClient();
     this.client.on('error', (err) => {
       console.log(err);
-      });
-    }
+    });
+  }
 
   isAlive() {
     return this.client.connected;
@@ -30,12 +23,10 @@ class RedisClient {
     const setPromise = promisify(this.client.set).bind(this.client);
     return setPromise(key, value, 'EX', duration);
   }
-    
-  
 
   async del(key) {
-      const delPromise = promisify(this.client.del).bind(this.client);
-      return delPromise(key);
+    const delPromise = promisify(this.client.del).bind(this.client);
+    return delPromise(key);
   }
 }
 
