@@ -4,6 +4,7 @@ const path = require('path');
 const mongo = require('mongodb');
 const redisClient = require('../utils/redis');
 const dbClient = require('../utils/db');
+const bull = require('bull');
 
 module.exports = new class FilesController {
   async postFile(request, response) {
@@ -28,6 +29,7 @@ module.exports = new class FilesController {
     }
     const USERID = new mongo.ObjectId(user);
 
+    
     // if type is folder
     if (type === 'folder') {
       const fileObj = {
@@ -68,6 +70,16 @@ module.exports = new class FilesController {
     };
 
     const afterInsert = await dbClient.files.insertOne(OutFileObj);
+
+    
+    const fileQueue = new bull('fileQueue', 'redis');
+    if (type === 'image') {
+      const job = await fileQueue.createJob('image', {
+        fileId: afterInsert.insertedId, userId: USERID
+      });
+      await job.save();
+    }
+
     return response.status(201).json(
       {
         id: afterInsert.insertedId,
