@@ -1,26 +1,26 @@
-import redisClient from '../utils/redis';
-import dbClient from '../utils/db';
 import sha1 from 'sha1';
 import { v4 as uuidv4 } from 'uuid';
+import redisClient from '../utils/redis';
+import dbClient from '../utils/db';
 
 module.exports = new class AuthController {
   async getConnect(request, response) {
     if (!request.headers.authorization || request.headers.authorization.indexOf('Basic ') === -1) {
-      return response.status(401).json({ message: 'Missing Auth Header'});
+      return response.status(401).json({ message: 'Missing Auth Header' });
     }
     const rawCred = request.headers.authorization;
     const slice = rawCred.slice(6);
     const stringCred = Buffer.from(slice, 'base64').toString();
     const [email, pwd] = stringCred.split(':');
 
-    if (!email || !pwd){
-      return response.status(401).json({error: 'Unauthorized'});
+    if (!email || !pwd) {
+      return response.status(401).json({ error: 'Unauthorized' });
     }
-    const cred = {email, password: sha1(pwd)};
+    const cred = { email, password: sha1(pwd) };
     const user = await dbClient.db.collection('users').findOne(cred);
 
-    if (!user){
-      return response.status(401).json({error: 'Unauthorized'});
+    if (!user) {
+      return response.status(401).json({ error: 'Unauthorized' });
     }
 
     const token = uuidv4();
@@ -34,11 +34,11 @@ module.exports = new class AuthController {
     const user = await redisClient.get(`auth_${token}`);
 
     if (!user) {
-      return response.status(401).json({error: 'Unauthorized'});
+      return response.status(401).json({ error: 'Unauthorized' });
     }
-    
+
     await redisClient.del(`auth_${token}`);
     response.status(204).end();
     return null;
   }
-};
+}();
