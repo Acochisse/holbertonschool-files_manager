@@ -35,11 +35,14 @@ fileQueue.process(async (job) => {
   const localPath = (`${FOLDER_PATH}/${fileId}`);
   const options = { width: 500 };
   const thumbnail = await imageThumbnail(localPath, options);
-  await fs.promises.writeFile(`${localPath}_500`, thumbnail, { flag: 'w+' });
+  thumbnail._id = file._id + '_500';
+  await files.insertOne(thumbnail);
   options.width = 250;
   const thumbnail2 = await imageThumbnail(localPath, options);
-  await fs.promises.writeFile(`${localPath}_250`, thumbnail2, { flag: 'w+' });
+  thumbnail2._id = file._id + '_250';
+  await files.insertOne(thumbnail2);
   options.width = 100;
   const thumbnail3 = await imageThumbnail(localPath, options);
-  await fs.promises.writeFile(`${localPath}_100`, thumbnail3, { flag: 'w+' });
+  thumbnail3._id = file._id + '_100';
+  await files.insertOne(thumbnail3);
 });
