@@ -77,7 +77,6 @@ module.exports = new class FilesController {
       const job = await fileQueue.add('image', {
         fileId: afterInsert.insertedId, userId: USERID
       });
-      await job.save();
     }
 
     return response.status(201).json(
