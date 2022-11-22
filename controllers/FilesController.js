@@ -74,7 +74,7 @@ module.exports = new class FilesController {
     
     const fileQueue = new bull('fileQueue', 'redis');
     if (type === 'image') {
-      const job = await fileQueue.createJob('image', {
+      const job = await fileQueue.add('image', {
         fileId: afterInsert.insertedId, userId: USERID
       });
       await job.save();
